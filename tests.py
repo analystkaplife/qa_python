@@ -54,25 +54,42 @@ class TestBooksCollector:
         collector.add_new_book("Дюна")
         assert len(collector.books_genre) == 1
 
-    # -------------------- Тесты для set_book_genre и get_book_genre --------------------
+        # -------------------- Тесты для set_book_genre --------------------
     @pytest.mark.parametrize("genre", ["Фантастика", "Ужасы", "Детективы", "Мультфильмы", "Комедии"])
     def test_set_book_genre_valid_genre(self, genre):
         collector = BooksCollector()
         collector.add_new_book("Книга")
         collector.set_book_genre("Книга", genre)
-        assert collector.get_book_genre("Книга") == genre
+        assert collector.books_genre["Книга"] == genre
 
     def test_set_book_genre_invalid_genre(self):
         collector = BooksCollector()
         collector.add_new_book("Книга")
         collector.set_book_genre("Книга", "Роман")
-        assert collector.get_book_genre("Книга") == ""
+        assert collector.books_genre["Книга"] == ""
 
     def test_set_book_genre_nonexistent_book(self):
         collector = BooksCollector()
         collector.add_new_book("Существующая книга")
         collector.set_book_genre("Несуществующая книга", "Фантастика")
         assert "Несуществующая книга" not in collector.books_genre
+
+    # -------------------- Тесты для get_book_genre --------------------
+    def test_get_book_genre_valid(self):
+        collector = BooksCollector()
+        collector.add_new_book("Книга")
+        collector.books_genre["Книга"] = "Фантастика"
+        assert collector.get_book_genre("Книга") == "Фантастика"
+
+    def test_get_book_genre_nonexistent_book(self):
+        collector = BooksCollector()
+        collector.add_new_book("Книга")
+        assert collector.get_book_genre("Несуществующая книга") is None
+
+    def test_get_book_genre_no_genre(self):
+        collector = BooksCollector()
+        collector.add_new_book("Книга")
+        assert collector.get_book_genre("Книга") == ""
 
     # -------------------- Тесты для get_books_with_specific_genre --------------------
     @pytest.mark.parametrize("genre, expected_books", [
@@ -181,21 +198,3 @@ class TestBooksCollector:
         favorites = collector.get_list_of_favorites_books()
         assert favorites == ["Книга 1", "Книга 2"]
 
-    # -------------------- Комплексные тесты --------------------
-    def test_full_scenario_add_and_favorite(self):
-        collector = BooksCollector()
-        collector.add_new_book("1984")
-        collector.set_book_genre("1984", "Фантастика")
-        collector.add_book_in_favorites("1984")
-        assert collector.get_book_genre("1984") == "Фантастика"
-        assert "1984" in collector.favorites
-        assert collector.get_books_for_children() == ["1984"]
-
-    def test_full_scenario_with_age_rating(self):
-        collector = BooksCollector()
-        collector.add_new_book("Оно")
-        collector.set_book_genre("Оно", "Ужасы")
-        assert collector.get_book_genre("Оно") == "Ужасы"
-        assert collector.get_books_for_children() == []
-        collector.add_book_in_favorites("Оно")
-        assert "Оно" in collector.favorites

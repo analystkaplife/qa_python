@@ -38,9 +38,8 @@
 - (test_get_list_of_favorites_books_empty) Получение пустого списка избранного
 - (test_get_list_of_favorites_books_with_books) Получение списка избранного с книгами
 
-### 9. Комплексные сценарии
-- (test_full_scenario_add_and_favorite) Полный цикл: добавление → установка жанра → добавление в избранное
-- (test_full_scenario_with_age_rating) Сценарий с книгой возрастного рейтинга — не попадает в детский список
+
+
 
 ---
 
